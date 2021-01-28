@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>SignalMan</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
+    <script type="text/javascript">
+        function onConnectClick() {
+            var huburi = document.getElementById('huburl').value;
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl(huburi)
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            function start() {
+                connection.start().then(function () {
+                    console.log("SignalR Connected.");
+                }).catch(function (err) {
+                    console.log(err);
+                    setTimeout(start, 5000);
+                });
+            };
+
+            connection.onclose(start);
+
+            // Start the connection.
+            start();
+        }
+    </script>
+</head>
+<body>
+    <h1>SignalMan</h1>
+    <h3>Server</h3>
+    <table>
+        <tr>
+            <td>Url: </td>
+            <td><input type="text" id="huburl" size="60" value="http://localhost:7071/api" /></td>
+        </tr>
+    </table>
+    <input type="button" id="connect" value="Connect" onclick="onConnectClick()" />
+</body>
+</html>
